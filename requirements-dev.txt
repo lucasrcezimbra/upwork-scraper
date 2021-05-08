@@ -1,0 +1,4 @@
+-r requirements.txt
+
+flake8==3.9.1
+pre-commit==2.12.1

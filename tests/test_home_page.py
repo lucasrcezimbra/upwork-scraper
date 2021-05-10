@@ -1,5 +1,4 @@
-
-from upwork import HomePage
+from upwork.pages import HomePage
 
 
 def test_init(mocker):
@@ -13,7 +12,7 @@ def test_init(mocker):
 
 def test_data(mocker):
     driver_mock, wait_mock = mocker.MagicMock(), mocker.MagicMock()
-    EC_mock = mocker.patch('upwork.EC')
+    EC_mock = mocker.patch('upwork.pages.EC')
 
     page = HomePage(driver_mock, wait_mock)
     page.data()

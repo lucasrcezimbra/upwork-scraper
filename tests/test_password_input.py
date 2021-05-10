@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from upwork import PasswordInput
+from upwork.pages import PasswordInput
 
 
 def test_init(mocker):
@@ -25,7 +25,7 @@ def test_fill(mocker):
     driver_mock, wait_mock = mocker.MagicMock(), mocker.MagicMock()
     element_mock = mocker.MagicMock()
     wait_mock.until.return_value = element_mock
-    EC_mock = mocker.patch('upwork.EC')
+    EC_mock = mocker.patch('upwork.pages.EC')
 
     input = PasswordInput(driver_mock, wait_mock)
     input.fill(password)

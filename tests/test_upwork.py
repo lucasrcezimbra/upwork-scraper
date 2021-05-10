@@ -2,7 +2,8 @@ import json
 
 from selenium.webdriver.common.keys import Keys
 
-from upwork import HomePage, LoginPage, PasswordInput, Upwork, UsernameInput
+from upwork import Upwork
+from upwork.pages import HomePage, LoginPage, PasswordInput, UsernameInput
 
 
 def test_init(mocker):
@@ -22,7 +23,7 @@ def test_login(mocker):
     driver_mock, wait_mock = mocker.MagicMock(), mocker.MagicMock()
     username_element, password_element = mocker.MagicMock(), mocker.MagicMock()
     wait_mock.until.side_effect = [username_element, password_element]
-    EC_mock = mocker.patch('upwork.EC')
+    EC_mock = mocker.patch('upwork.pages.EC')
 
     upwork = Upwork(username, driver_mock, wait_mock)
     upwork.login(password)

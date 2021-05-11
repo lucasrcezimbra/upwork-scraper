@@ -1,5 +1,8 @@
 import logging
+import pdb
 from uuid import uuid4
+
+from upwork import settings
 
 # TODO: improve log format
 logger = logging.getLogger(__name__)
@@ -11,16 +14,21 @@ def screenshot(driver, filepath=None):
     driver.save_screenshot(filepath)
 
 
+def handle_exception(exception, driver):
+    logger.critical(f'{exception}')
+    screenshot(driver)
+    if settings.DEBUG:
+        pdb.set_trace()
+    else:
+        driver.quit()
+        raise exception
+
+
 def driver_except(f):
     def wrapper(self, *args, **kwargs):
         try:
             return f(self, *args, **kwargs)
         except Exception as e:
-            logger.critical(f'{e}')
-            screenshot(self.driver)
-            raise e
-        # finally:
-        #     # TODO: keep open when debuging
-        #     self.driver.quit()
+            handle_exception(e, self.driver)
 
     return wrapper

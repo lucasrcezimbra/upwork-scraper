@@ -1,31 +1,10 @@
 import json
-import logging
-from uuid import uuid4
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
 from upwork.pages import ContactJsonPage, HomePage, LoginPage
-
-# TODO: improve log format
-logger = logging.getLogger(__name__)
-
-
-# TODO: extract to troubleshooting namespace
-def driver_except(f):
-    def wrapper(self, *args, **kwargs):
-        try:
-            return f(self, *args, **kwargs)
-        except Exception as e:
-            filename = f'{uuid4()}.png'
-            logger.critical(f'{e}. Saving screenshot for troubleshooting in {filename}')
-            self.driver.save_screenshot(filename)
-            raise e
-        # finally:
-        #     # TODO: keep open when debuging
-        #     self.driver.quit()
-
-    return wrapper
+from upwork.troubleshooting import driver_except
 
 
 class Upwork:

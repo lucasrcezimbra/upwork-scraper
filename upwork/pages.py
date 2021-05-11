@@ -4,10 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 
+from upwork import settings
 from upwork.models import Profile
-
-# TODO: moves to settings
-BASE_URL = 'https://www.upwork.com/'
 
 
 class Page:
@@ -39,7 +37,7 @@ class PasswordInput(Input):
 
 
 class LoginPage(Page):
-    url = BASE_URL + 'ab/account-security/login'
+    url = settings.BASE_URL + 'ab/account-security/login'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -73,7 +71,7 @@ class HomePage(Page):
 
 
 class ContactJsonPage(Page):
-    url = BASE_URL + 'freelancers/settings/api/v1/contactInfo'
+    url = settings.BASE_URL + 'freelancers/settings/api/v1/contactInfo'
 
     def rawdata(self):
         self.get()

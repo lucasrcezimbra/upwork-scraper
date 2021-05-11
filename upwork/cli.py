@@ -12,3 +12,4 @@ def cli(username, password, secret_answer):
     upwork = Upwork(username)
     upwork.login(password, secret_answer)
     upwork.dump_userdata()
+    upwork.dump_profile()

@@ -47,11 +47,17 @@ class Upwork:
         return self.home_page.userdata()
 
     @driver_except
-    def dump_userdata(self, path=None):
+    def dump_userdata(self, path=None, indent=4):
         path = path or f'{self.username}.json'
         with open(path, 'w') as f:
-            json.dump(self.userdata(), f)
+            json.dump(self.userdata(), f, indent=indent)
 
     @driver_except
     def profile(self):
         return self.contact_json_page.profile()
+
+    @driver_except
+    def dump_profile(self, path=None, indent=4):
+        path = path or f'{self.username}_profile.json'
+        with open(path, 'w') as f:
+            json.dump(self.profile().dict(), f, indent=indent)

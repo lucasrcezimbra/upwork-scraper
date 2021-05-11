@@ -114,3 +114,15 @@ def test_profile(mocker, contact_info_fake):
     assert profile.address.state == address['state']
     assert profile.address.postal_code == address['zip']
     assert profile.address.country == address['country']
+
+
+def test_dump_profile(mocker, tmpdir, contact_info_fake):
+    driver_mock, wait_mock = mocker.MagicMock(), mocker.MagicMock()
+    filepath = tmpdir.join('username.json')
+
+    upwork = Upwork('username', driver_mock, wait_mock)
+    upwork.contact_json_page.rawdata = lambda: json.dumps(contact_info_fake)
+    upwork.dump_profile(filepath)
+
+    with open(filepath) as f:
+        assert json.load(f) == upwork.profile().dict()

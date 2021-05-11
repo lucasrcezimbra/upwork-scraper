@@ -48,8 +48,11 @@ class LoginPage(Page):
 
 
 class HomePage(Page):
-    def data(self):
+    def wait_loading(self):
         self.wait.until(EC.title_contains('My Job Feed'))
+
+    def data(self):
+        self.wait_loading()
         return self.driver.execute_script(
             'return window.__INITIAL_STATE__.organizations.activeItem;'
         )

@@ -22,14 +22,14 @@ def test_login(mocker):
     username, password = 'username', 'passwd'
     driver_mock, wait_mock = mocker.MagicMock(), mocker.MagicMock()
     username_element, password_element = mocker.MagicMock(), mocker.MagicMock()
-    wait_mock.until.side_effect = [username_element, password_element]
+    wait_mock.until.side_effect = [username_element, password_element, None]
     EC_mock = mocker.patch('upwork.pages.EC')
 
     upwork = Upwork(username, driver_mock, wait_mock)
     upwork.login(password)
 
     driver_mock.get.assert_called_once_with(LoginPage.url)
-    assert wait_mock.until.call_count == 2
+    assert wait_mock.until.call_count == 3
     EC_mock.presence_of_element_located.call_args_list == [
         mocker.call(UsernameInput.selector),
         mocker.call(PasswordInput.selector),
@@ -42,6 +42,7 @@ def test_login(mocker):
         mocker.call(password),
         mocker.call(Keys.RETURN)
     ]
+    EC_mock.title_contains.assert_called_once_with('My Job Feed')
 
 
 def test_userdata(mocker):

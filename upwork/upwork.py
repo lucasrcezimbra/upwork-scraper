@@ -38,6 +38,7 @@ class Upwork:
     @driver_except
     def login(self, password, secret_answer=None):
         self.login_page.login(self.username, password)
+        self.home_page.wait_loading()
 
     @driver_except
     def userdata(self):

@@ -42,3 +42,13 @@ def test_userdata(mocker):
         'name': name,
         'title': title,
     }
+
+
+def test_wait_loading(mocker):
+    driver_mock, wait_mock = mocker.MagicMock(), mocker.MagicMock()
+    EC_mock = mocker.patch('upwork.pages.EC')
+
+    HomePage(driver_mock, wait_mock).wait_loading()
+
+    EC_mock.title_contains.assert_called_once_with('My Job Feed')
+    wait_mock.until.assert_called_once_with(EC_mock.title_contains.return_value)

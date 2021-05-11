@@ -88,3 +88,29 @@ def test_dump_userdata(mocker, tmpdir):
             'name': name,
             'title': title,
         }
+
+
+def test_profile(mocker, contact_info_fake):
+    driver_mock, wait_mock = mocker.MagicMock(), mocker.MagicMock()
+
+    upwork = Upwork('username', driver_mock, wait_mock)
+    upwork.contact_json_page.rawdata = lambda: json.dumps(contact_info_fake)
+    profile = upwork.profile()
+
+    freelancer = contact_info_fake['freelancer']
+    address = freelancer['address']
+    assert profile.full_name == ' '.join((
+        freelancer['firstName'],
+        freelancer['lastName'],
+    ))
+    assert profile.first_name == freelancer['firstName']
+    assert profile.last_name == freelancer['lastName']
+    assert profile.email == freelancer['email']['address']
+    assert profile.phone_number == freelancer['phone']
+    assert profile.picture_url == freelancer['portrait']['bigPortrait']
+    assert profile.address.line1 == address['street']
+    assert profile.address.line2 == address['additionalInfo']
+    assert profile.address.city == address['city']
+    assert profile.address.state == address['state']
+    assert profile.address.postal_code == address['zip']
+    assert profile.address.country == address['country']

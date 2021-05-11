@@ -1,6 +1,10 @@
+import json
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
+
+from upwork.models import Profile
 
 # TODO: moves to settings
 BASE_URL = 'https://www.upwork.com/'
@@ -66,3 +70,38 @@ class HomePage(Page):
             'name': data['label'],
             'title': data['type_title'],
         }
+
+
+class ContactJsonPage(Page):
+    url = BASE_URL + 'freelancers/settings/api/v1/contactInfo'
+
+    def rawdata(self):
+        self.get()
+        return self.driver.find_element_by_xpath('//pre').get_attribute('innerHTML')
+
+    def data(self):
+        return json.loads(self.rawdata())
+
+    def userdata(self):
+        data = self.data()
+        person = data['freelancer']
+        address = person['address']
+        return {
+            'full_name': ' '.join((person['firstName'], person['lastName'])),
+            'first_name': person['firstName'],
+            'last_name': person['lastName'],
+            'email': person['email']['address'],
+            'phone_number': person['phone'],
+            'picture_url': person['portrait']['bigPortrait'],
+            'address': {
+                'line1': address['street'],
+                'line2': address['additionalInfo'],
+                'city': address['city'],
+                'state': address['state'],
+                'postal_code': address['zip'],
+                'country': address['country'],
+            }
+        }
+
+    def profile(self):
+        return Profile(**self.userdata())

@@ -5,12 +5,13 @@ from uuid import uuid4
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
-from upwork.pages import HomePage, LoginPage
+from upwork.pages import ContactJsonPage, HomePage, LoginPage
 
 # TODO: improve log format
 logger = logging.getLogger(__name__)
 
 
+# TODO: extract to troubleshooting namespace
 def driver_except(f):
     def wrapper(self, *args, **kwargs):
         try:
@@ -34,6 +35,7 @@ class Upwork:
         self.wait = wait or WebDriverWait(self.driver, 10)
         self.login_page = LoginPage(self.driver, self.wait)
         self.home_page = HomePage(self.driver, self.wait)
+        self.contact_json_page = ContactJsonPage(self.driver, self.wait)
 
     @driver_except
     def login(self, password, secret_answer=None):
@@ -49,3 +51,7 @@ class Upwork:
         path = path or f'{self.username}.json'
         with open(path, 'w') as f:
             json.dump(self.userdata(), f)
+
+    @driver_except
+    def profile(self):
+        return self.contact_json_page.profile()

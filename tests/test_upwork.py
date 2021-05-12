@@ -3,19 +3,25 @@ import json
 from selenium.webdriver.common.keys import Keys
 
 from upwork import Upwork
-from upwork.pages import HomePage, LoginPage, PasswordInput, UsernameInput
+from upwork.pages import (AuthorizationPage, ContactJsonPage, HomePage,
+                          LoginPage, PasswordInput, UsernameInput)
 
 
 def test_init(mocker):
     driver_mock = mocker.MagicMock()
     wait_mock = mocker.MagicMock()
 
-    upwork = Upwork('username', driver=driver_mock, wait=wait_mock)
+    upwork = Upwork('username', 'password', 'secret_answer', driver=driver_mock, wait=wait_mock)
 
+    assert upwork.username == 'username'
+    assert upwork.password == 'password'
+    assert upwork.secret_answer == 'secret_answer'
     assert upwork.driver == driver_mock
     assert upwork.wait == wait_mock
     assert isinstance(upwork.login_page, LoginPage)
     assert isinstance(upwork.home_page, HomePage)
+    assert isinstance(upwork.contact_json_page, ContactJsonPage)
+    assert isinstance(upwork.authorization_page, AuthorizationPage)
 
 
 def test_login(mocker):
@@ -25,8 +31,8 @@ def test_login(mocker):
     wait_mock.until.side_effect = [username_element, password_element, None]
     EC_mock = mocker.patch('upwork.pages.EC')
 
-    upwork = Upwork(username, driver_mock, wait_mock)
-    upwork.login(password)
+    upwork = Upwork(username, password, 'secret_answer', driver_mock, wait_mock)
+    upwork.login()
 
     driver_mock.get.assert_called_once_with(LoginPage.url)
     assert wait_mock.until.call_count == 3
@@ -58,7 +64,7 @@ def test_userdata(mocker):
         'uid': '1361618152857010177'
     }
 
-    upwork = Upwork('username', driver_mock, wait_mock)
+    upwork = Upwork('username', 'password', 'secret_answer', driver_mock, wait_mock)
 
     assert upwork.userdata() == {
         'name': name,
@@ -80,7 +86,7 @@ def test_dump_userdata(mocker, tmpdir):
     }
 
     filepath = tmpdir.join('username.json')
-    upwork = Upwork('username', driver_mock, wait_mock)
+    upwork = Upwork('username', 'password', 'secret_answer', driver_mock, wait_mock)
     upwork.dump_userdata(filepath)
 
     with open(filepath) as f:
@@ -93,7 +99,7 @@ def test_dump_userdata(mocker, tmpdir):
 def test_profile(mocker, contact_info_fake):
     driver_mock, wait_mock = mocker.MagicMock(), mocker.MagicMock()
 
-    upwork = Upwork('username', driver_mock, wait_mock)
+    upwork = Upwork('username', 'password', 'secret_answer', driver_mock, wait_mock)
     upwork.contact_json_page.rawdata = lambda: json.dumps(contact_info_fake)
     profile = upwork.profile()
 
@@ -120,7 +126,7 @@ def test_dump_profile(mocker, tmpdir, contact_info_fake):
     driver_mock, wait_mock = mocker.MagicMock(), mocker.MagicMock()
     filepath = tmpdir.join('username.json')
 
-    upwork = Upwork('username', driver_mock, wait_mock)
+    upwork = Upwork('username', 'password', 'secret_answer', driver_mock, wait_mock)
     upwork.contact_json_page.rawdata = lambda: json.dumps(contact_info_fake)
     upwork.dump_profile(filepath)
 

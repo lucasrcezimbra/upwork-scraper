@@ -36,6 +36,10 @@ class PasswordInput(Input):
     selector = (By.NAME, 'login[password]')
 
 
+class SecretAnswerInput(Input):
+    selector = (By.NAME, 'deviceAuth[answer]')
+
+
 class LoginPage(Page):
     url = settings.BASE_URL + 'ab/account-security/login'
 
@@ -61,7 +65,6 @@ class HomePage(Page):
         )
 
     def userdata(self):
-        # TODO: verify if is logged in
         # TODO: verify if is in homepage
         data = self.data()
         return {
@@ -103,3 +106,16 @@ class ContactJsonPage(Page):
 
     def profile(self):
         return Profile(**self.userdata())
+
+
+class AuthorizationPage(Page):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.secret_answer_input = SecretAnswerInput(self.driver, self.wait)
+
+    def needs_authorization(self):
+        return self.driver.title == 'Device authorization'
+
+    def ensure_authorization(self, secret_answer):
+        if self.needs_authorization():
+            self.secret_answer_input.fill(secret_answer)

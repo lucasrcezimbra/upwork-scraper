@@ -24,6 +24,27 @@ def test_init(mocker):
     assert isinstance(upwork.authorization_page, AuthorizationPage)
 
 
+def test_headless_by_default(mocker):
+    chrome_mock = mocker.patch('upwork.upwork.Chrome')
+    options_mock = mocker.patch('upwork.upwork.ChromeOptions').return_value
+
+    Upwork('username', 'password', 'secret_answer')
+
+    options_mock.add_argument.assert_called_with('--headless')
+    chrome_mock.assert_called_once_with(options=options_mock)
+
+
+def test_headless_by_false(mocker):
+    mocker.patch('upwork.settings.HEADLESS', False)
+    chrome_mock = mocker.patch('upwork.upwork.Chrome')
+    options_mock = mocker.patch('upwork.upwork.ChromeOptions').return_value
+
+    Upwork('username', 'password', 'secret_answer')
+
+    options_mock.add_argument.assert_not_called()
+    chrome_mock.assert_called_once_with(options=options_mock)
+
+
 def test_login(mocker):
     username, password = 'username', 'passwd'
     driver_mock, wait_mock = mocker.MagicMock(), mocker.MagicMock()

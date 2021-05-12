@@ -1,8 +1,9 @@
 import json
 
-from selenium import webdriver
+from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 
+from upwork import settings
 from upwork.pages import (AuthorizationPage, ContactJsonPage, HomePage,
                           LoginPage)
 from upwork.troubleshooting import driver_except
@@ -13,8 +14,11 @@ class Upwork:
         self.username = username
         self.password = password
         self.secret_answer = secret_answer
-        self.driver = driver or webdriver.Chrome()
-        self.wait = wait or WebDriverWait(self.driver, 10)
+        options = ChromeOptions()
+        if settings.HEADLESS:
+            options.add_argument("--headless")
+        self.driver = driver or Chrome(options=options)
+        self.wait = wait or WebDriverWait(self.driver, settings.WAIT_TIMEOUT)
         self.login_page = LoginPage(self.driver, self.wait)
         self.home_page = HomePage(self.driver, self.wait)
         self.contact_json_page = ContactJsonPage(self.driver, self.wait)

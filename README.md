@@ -27,6 +27,6 @@ pip install -r requirements-dev.txt
 pre-commit install
 # Run tests
 pytest
-# Run with DEBUG to keep browser open for debug when raises exceptions
-DEBUG=True python -m upwork --help
+# Run with DEBUG and HEADLESS to to facilitate development
+DEBUG=True HEADLESS=False python -m upwork --help
 ```

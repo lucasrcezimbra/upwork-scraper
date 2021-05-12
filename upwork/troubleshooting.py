@@ -1,11 +1,10 @@
-import logging
 import pdb
 from uuid import uuid4
 
 from upwork import settings
+from upwork.logging import get_logger
 
-# TODO: improve log format
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def screenshot(driver, filepath=None):

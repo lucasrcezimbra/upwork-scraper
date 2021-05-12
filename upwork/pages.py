@@ -5,7 +5,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 
 from upwork import settings
+from upwork.logging import get_logger
 from upwork.models import Profile
+
+logger = get_logger(__name__)
 
 
 class Page:
@@ -14,6 +17,7 @@ class Page:
         self.wait = wait
 
     def get(self):
+        logger.debug(f'Get page {self.url}')
         self.driver.get(self.url)
 
 
@@ -23,7 +27,9 @@ class Input:
         self.wait = wait
 
     def fill(self, value):
+        logger.debug(f'Waiting presence of {self.selector}')
         element = self.wait.until(EC.presence_of_element_located(self.selector))
+        logger.debug(f'Filling in input {self.selector}')
         element.send_keys(value)
         element.send_keys(Keys.RETURN)
 
@@ -48,24 +54,30 @@ class LoginPage(Page):
         self.username_input = UsernameInput(self.driver, self.wait)
         self.password_input = PasswordInput(self.driver, self.wait)
 
-    def login(self, username, password, secret_answer=None):
+    def login(self, username, password):
+        logger.debug('Login: Get login page')
         self.get()
+        logger.debug('Login: Filling in username input')
         self.username_input.fill(username)
+        logger.debug('Login: Filling in password input')
         self.password_input.fill(password)
 
 
 class HomePage(Page):
     def wait_loading(self):
+        logger.debug('Waiting for home page')
         self.wait.until(EC.title_contains('My Job Feed'))
 
     def data(self):
+        # TODO: verify if is in homepage
         self.wait_loading()
+        logger.debug('Get data from homepage')
         return self.driver.execute_script(
             'return window.__INITIAL_STATE__.organizations.activeItem;'
         )
 
     def userdata(self):
-        # TODO: verify if is in homepage
+        logger.debug('Get userdata from homepage')
         data = self.data()
         return {
             'name': data['label'],
@@ -78,15 +90,18 @@ class ContactJsonPage(Page):
 
     def rawdata(self):
         self.get()
+        logger.debug('rawdata from contact info json page')
         return self.driver.find_element_by_xpath('//pre').get_attribute('innerHTML')
 
     def data(self):
+        logger.debug('data from contact info json page')
         return json.loads(self.rawdata())
 
     def userdata(self):
         data = self.data()
         person = data['freelancer']
         address = person['address']
+        logger.debug('userdata from contact info json page')
         return {
             'full_name': ' '.join((person['firstName'], person['lastName'])),
             'first_name': person['firstName'],
@@ -105,6 +120,7 @@ class ContactJsonPage(Page):
         }
 
     def profile(self):
+        logger.debug('profile from contact info json page')
         return Profile(**self.userdata())
 
 
@@ -114,8 +130,10 @@ class AuthorizationPage(Page):
         self.secret_answer_input = SecretAnswerInput(self.driver, self.wait)
 
     def needs_authorization(self):
+        logger.debug(f'Needs secret answer? Page title {self.driver.title}')
         return self.driver.title == 'Device authorization'
 
     def ensure_authorization(self, secret_answer):
         if self.needs_authorization():
+            logger.debug('Needs secret answer authorization. Filling in input')
             self.secret_answer_input.fill(secret_answer)

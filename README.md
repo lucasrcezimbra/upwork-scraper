@@ -1,1 +1,29 @@
 # Upwork Scraper
+
+## Installation
+- Python >= 3.9.0
+```bash
+git clone https://github.com/lucasrcezimbra/upwork-scraper
+cd upwork-scraper
+python -m venv .venv
+```
+
+### To use
+```bash
+# Install requirements
+pip install -r requirements.txt
+# Run help to see how to use
+python -m upwork --help
+```
+
+### For development
+```bash
+# Install requirements-dev
+pip install -r requirements-dev.txt
+# Install pre-commit
+pre-commit install
+# Run tests
+pytest
+# Run with DEBUG to keep browser open for debug when raises exceptions
+DEBUG=True python -m upwork --help
+```

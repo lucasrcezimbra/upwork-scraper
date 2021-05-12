@@ -3,23 +3,33 @@
 ## Installation
 - Requirements:
   * Python >= 3.9.0
-  * Chrome or Chromium
+  * [Chrome](https://www.google.com/chrome/)
   * [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) in your $PATH
 ```bash
 git clone https://github.com/lucasrcezimbra/upwork-scraper
 cd upwork-scraper
 python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-### To use
+### Run
 ```bash
-# Install requirements
-pip install -r requirements.txt
 # Run help to see how to use
 python -m upwork --help
 ```
 
-### For development
+### Use in your code
+```python
+from upwork import Upwork
+
+upwork = Upwork(username='username', password='password', secret_answer='secret_answer')
+upwork.login()
+userdata = upwork.userdata()
+profile = upwork.profile()
+
+```
+### Development
 ```bash
 # Install requirements-dev
 pip install -r requirements-dev.txt

@@ -27,6 +27,6 @@ pip install -r requirements-dev.txt
 pre-commit install
 # Run tests
 pytest
-# Run with DEBUG and HEADLESS to to facilitate development
+# Run with DEBUG and HEADLESS to facilitate development
 DEBUG=True HEADLESS=False python -m upwork --help
 ```

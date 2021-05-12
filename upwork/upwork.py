@@ -13,7 +13,7 @@ class Upwork:
         self.username = username
         self.password = password
         self.secret_answer = secret_answer
-        self.driver = driver or webdriver.Chrome('./chromedriver')
+        self.driver = driver or webdriver.Chrome()
         self.wait = wait or WebDriverWait(self.driver, 10)
         self.login_page = LoginPage(self.driver, self.wait)
         self.home_page = HomePage(self.driver, self.wait)

@@ -1,7 +1,10 @@
 # Upwork Scraper
 
 ## Installation
-- Python >= 3.9.0
+- Requirements:
+  * Python >= 3.9.0
+  * Chrome or Chromium
+  * [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) in your $PATH
 ```bash
 git clone https://github.com/lucasrcezimbra/upwork-scraper
 cd upwork-scraper
